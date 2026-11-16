@@ -11,3 +11,26 @@ input::placeholder{color:var(--ink-soft)}
 @keyframes orbBlink{0%,100%{opacity:1}50%{opacity:.25}}
 
 html,body{overflow:hidden}
+
+/* ===== Móvil nativo (reflow vertical para teléfonos) ===== */
+@media (max-width:760px){
+  /* Wordmark a la izquierda para no chocar con la píldora de estado */
+  .l-top{ justify-content:flex-start !important; padding-left:16px; top:18px !important; }
+  /* La esfera de Orbi sube y se reduce; el saludo baja justo debajo */
+  .l-orbi{ top:40% !important; }
+  .l-home{ bottom:auto !important; top:58% !important; width:calc(100% - 40px) !important; }
+  .l-greet{ white-space:normal !important; font-size:19px !important; }
+  /* Tablero a pantalla casi completa, dejando sitio a la fila de tripulación y a la barra inferior */
+  .l-sheet{ left:10px !important; right:10px !important; top:118px !important; bottom:14px !important; border-radius:22px !important; }
+  /* Chat a todo el ancho del teléfono */
+  .l-chatw{ width:calc(100% - 24px) !important; max-width:560px; }
+  .l-chatscroll{ top:108px !important; bottom:224px !important; }
+  .l-chatinput{ bottom:calc(18px + env(safe-area-inset-bottom,0px)) !important; }
+}
+/* Pantallas muy bajas (teléfono en horizontal): compacta aún más */
+@media (max-width:760px) and (max-height:520px){
+  .l-crewm{ top:38px !important; padding:3px 12px !important; }
+  .l-orbi{ top:46% !important; }
+  .l-home{ top:62% !important; }
+  .l-sheet{ top:96px !important; }
+}

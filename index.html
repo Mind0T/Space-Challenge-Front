@@ -31,7 +31,7 @@
 
 <div id="stage" style="position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);transform-origin:center center;width:1040px;height:640px;overflow:hidden;background:var(--bg);color:var(--ink);transition:background .5s var(--ease)">
 
-  <div style="position:absolute;top:22px;left:0;right:0;display:flex;justify-content:center;pointer-events:none;z-index:5">
+  <div class="l-top" style="position:absolute;top:22px;left:0;right:0;display:flex;justify-content:center;pointer-events:none;z-index:5">
     <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;letter-spacing:.42em;color:var(--ink-soft);padding-left:.42em">ORBITAL</div>
   </div>
 
@@ -46,12 +46,12 @@
     <button onClick="{{ openHelp }}" aria-label="Ayuda" title="Cómo usar ORBITAL" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--hairline);background:var(--surface-translucent);backdrop-filter:blur(20px);font-family:'Space Grotesk';font-size:14px;color:var(--ink-soft);cursor:pointer">?</button>
   </div>
 
-  <div onClick="{{ onOrbiClick }}" role="button" aria-label="Abrir tablero de monitoreo" style="position:absolute;left:50%;top:calc(50% - 110px);width:360px;height:360px;transform:{{ orbiTransform }};filter:{{ orbiFilter }};opacity:{{ orbiOpacity }};transition:transform .5s var(--ease),filter .5s var(--ease),opacity .5s var(--ease);cursor:pointer;z-index:2">
+  <div onClick="{{ onOrbiClick }}" role="button" aria-label="Abrir tablero de monitoreo" class="l-orbi" style="position:absolute;left:50%;top:calc(50% - 110px);width:360px;height:360px;transform:{{ orbiTransform }};filter:{{ orbiFilter }};opacity:{{ orbiOpacity }};transition:transform .5s var(--ease),filter .5s var(--ease),opacity .5s var(--ease);cursor:pointer;z-index:2">
     {{ orbiEl }}
   </div>
 
-  <div style="position:absolute;left:50%;bottom:216px;transform:translateX(-50%);width:560px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;opacity:{{ homeOpacity }};pointer-events:{{ homePE }};transition:opacity .4s var(--ease);z-index:3">
-    <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;line-height:1.3">{{ greeting }}</div>
+  <div class="l-home" style="position:absolute;left:50%;bottom:216px;transform:translateX(-50%);width:560px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;opacity:{{ homeOpacity }};pointer-events:{{ homePE }};transition:opacity .4s var(--ease);z-index:3">
+    <div class="l-greet" style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;line-height:1.3">{{ greeting }}</div>
     <div style="display:flex;align-items:center;gap:8px">
       <button onClick="{{ onStatusClick }}" style="display:flex;align-items:center;gap:9px;border:0;padding:8px 14px;border-radius:999px;background:var(--surface-translucent);backdrop-filter:blur(20px);font-size:14px;color:var(--ink);cursor:pointer">
         <span style="width:8px;height:8px;border-radius:50%;background:{{ homeDot }};box-shadow:0 0 0 4px {{ homeDotRing }}"></span>
@@ -66,6 +66,7 @@
     </sc-if>
   </div>
 
+  <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
   <div style="position:absolute;left:28px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:18px;z-index:20">
     <div style="font-size:10px;letter-spacing:.2em;color:var(--ink-soft);margin-bottom:2px">TRIPULACIÓN</div>
     <sc-for list="{{ crewList }}" as="cm" hint-placeholder-count="4">
@@ -78,7 +79,23 @@
       </button>
     </sc-for>
   </div>
+  </sc-if>
 
+  <sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}">
+  <div class="l-crewm" style="position:absolute;top:44px;left:0;right:0;z-index:20;display:flex;gap:14px;justify-content:center;overflow-x:auto;padding:6px 14px;opacity:{{ crewmOpacity }};pointer-events:{{ crewmPE }};transition:opacity .4s var(--ease);-webkit-overflow-scrolling:touch;scrollbar-width:none">
+    <sc-for list="{{ crewList }}" as="cm" hint-placeholder-count="4">
+      <button onClick="{{ cm.onClick }}" aria-pressed="{{ cm.selected }}" style="flex:none;display:flex;flex-direction:column;align-items:center;gap:5px;border:0;background:none;padding:0;cursor:pointer">
+        <span style="position:relative;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:{{ cm.bg }};color:{{ cm.fg }};box-shadow:{{ cm.shadow }};transition:all .35s var(--ease)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4.5 20.5c.8-3.6 3.9-6 7.5-6s6.7 2.4 7.5 6"></path></svg>
+          <span style="position:absolute;top:1px;right:1px;width:10px;height:10px;border-radius:50%;background:{{ cm.dot }};border:2px solid var(--bg)"></span>
+        </span>
+        <span style="font-size:11px;font-weight:{{ cm.weight }};color:{{ cm.label }}">{{ cm.first }}</span>
+      </button>
+    </sc-for>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
   <div onPointerDown="{{ dialDown }}" onPointerMove="{{ dialMove }}" onPointerUp="{{ dialUp }}" onPointerCancel="{{ dialUp }}" onWheel="{{ dialWheel }}" style="position:absolute;left:50%;bottom:0;width:520px;height:200px;margin-left:-260px;touch-action:none;user-select:none;opacity:{{ dialOpacity }};pointer-events:{{ dialPE }};transform:translateY({{ dialY }});transition:opacity .4s var(--ease),transform .5s var(--ease);z-index:4">
     <svg width="520" height="200" viewBox="0 0 520 200" style="position:absolute;inset:0;pointer-events:none">
       <defs><linearGradient id="arcfade" x1="0" x2="1"><stop offset="0" stop-color="var(--ink)" stop-opacity="0"></stop><stop offset=".5" stop-color="var(--ink)" stop-opacity=".22"></stop><stop offset="1" stop-color="var(--ink)" stop-opacity="0"></stop></linearGradient></defs>
@@ -97,14 +114,31 @@
     </button>
     <div style="position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:11px;color:var(--ink-soft);opacity:{{ dialHintO }};transition:opacity .4s">Desliza el arco ← → para cambiar de tema</div>
   </div>
+  </sc-if>
+
+  <sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}">
+  <div class="l-navm" style="position:absolute;left:0;right:0;bottom:0;z-index:8;display:flex;align-items:center;gap:7px;padding:9px 12px calc(9px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--bg) 62%,transparent);opacity:{{ navOpacity }};pointer-events:{{ navPE }};transition:opacity .4s var(--ease)">
+    <sc-for list="{{ navItems }}" as="ni" hint-placeholder-count="4">
+      <button onClick="{{ ni.onClick }}" aria-label="{{ ni.label }}" aria-pressed="{{ ni.active }}" style="position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border:0;border-radius:15px;background:{{ ni.bg }};color:{{ ni.fg }};cursor:pointer;transition:background .3s var(--ease),color .3s var(--ease)">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ ni.icon }}"></path></svg>
+        <span style="font-size:10px;font-weight:700;letter-spacing:.01em">{{ ni.short }}</span>
+        <span style="position:absolute;top:5px;left:calc(50% + 11px);width:7px;height:7px;border-radius:50%;background:{{ ni.dotC }}"></span>
+      </button>
+    </sc-for>
+    <button onClick="{{ openChat }}" aria-label="Hablar con Orbi" style="flex:none;width:54px;height:54px;border-radius:50%;border:0;background:var(--orbi);color:#fff;display:flex;align-items:center;justify-content:center;gap:3px;box-shadow:0 10px 26px var(--orbi-glow);cursor:pointer">
+      <span style="width:5px;height:5px;border-radius:50%;background:#fff"></span><span style="width:5px;height:5px;border-radius:50%;background:#fff"></span><span style="width:5px;height:5px;border-radius:50%;background:#fff"></span>
+      <sc-if value="{{ llmOff }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:3px;right:3px;width:11px;height:11px;border-radius:50%;background:var(--state-idle);border:2px solid var(--bg)"></span></sc-if>
+    </button>
+  </div>
+  </sc-if>
 
   <div style="position:absolute;inset:0;z-index:10;opacity:{{ chatOpacity }};pointer-events:{{ chatPE }};transform:translateY({{ chatY }});transition:opacity .45s var(--ease),transform .5s var(--ease)">
-    <div style="position:absolute;top:64px;left:50%;transform:translateX(-50%);width:min(760px,calc(100% - 260px));display:flex;justify-content:flex-end">
+    <div class="l-chatw" style="position:absolute;top:64px;left:50%;transform:translateX(-50%);width:min(760px,calc(100% - 260px));display:flex;justify-content:flex-end">
       <button onClick="{{ closeAll }}" style="display:flex;align-items:center;gap:6px;border:1px solid var(--hairline);background:var(--surface-translucent);backdrop-filter:blur(20px);border-radius:999px;padding:8px 14px;font-size:13px;cursor:pointer">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>Cerrar chat
       </button>
     </div>
-    <div ref="{{ chatScrollRef }}" style="position:absolute;top:150px;bottom:190px;left:50%;transform:translateX(-50%);width:min(760px,calc(100% - 260px));overflow-y:auto;display:flex;flex-direction:column;gap:18px;padding:8px 4px 12px;scrollbar-width:thin">
+    <div ref="{{ chatScrollRef }}" class="l-chatw l-chatscroll" style="position:absolute;top:150px;bottom:190px;left:50%;transform:translateX(-50%);width:min(760px,calc(100% - 260px));overflow-y:auto;display:flex;flex-direction:column;gap:18px;padding:8px 4px 12px;scrollbar-width:thin">
       <div style="flex:1"></div>
       <sc-if value="{{ llmOff }}" hint-placeholder-val="{{ false }}">
         <div style="align-self:center;max-width:520px;text-align:center;display:flex;flex-direction:column;gap:6px;padding:14px 20px;border-radius:20px;background:var(--surface-translucent);backdrop-filter:blur(20px)">
@@ -135,7 +169,7 @@
         </div>
       </sc-for>
     </div>
-    <div style="position:absolute;bottom:28px;left:50%;transform:translateX(-50%);width:min(760px,calc(100% - 260px));display:flex;flex-direction:column;gap:10px">
+    <div class="l-chatw l-chatinput" style="position:absolute;bottom:28px;left:50%;transform:translateX(-50%);width:min(760px,calc(100% - 260px));display:flex;flex-direction:column;gap:10px">
       <div style="display:flex;gap:8px;flex-wrap:wrap;opacity:{{ chipsO }}">
         <sc-for list="{{ suggestions }}" as="sg" hint-placeholder-count="3">
           <button onClick="{{ sg.onClick }}" style="border:1px solid var(--hairline);background:var(--surface-translucent);backdrop-filter:blur(20px);border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer">{{ sg.text }}</button>
@@ -153,7 +187,7 @@
     </div>
   </div>
 
-  <div style="position:absolute;left:112px;right:24px;top:58px;bottom:18px;z-index:12;border-radius:28px;background:var(--surface-translucent);backdrop-filter:blur(24px) saturate(1.2);-webkit-backdrop-filter:blur(24px);box-shadow:0 30px 80px rgba(15,39,68,.14);transform:translateY({{ sheetY }});transition:{{ sheetTrans }};display:flex;flex-direction:column;overflow:hidden">
+  <div class="l-sheet" style="position:absolute;left:112px;right:24px;top:58px;bottom:18px;z-index:12;border-radius:28px;background:var(--surface-translucent);backdrop-filter:blur(24px) saturate(1.2);-webkit-backdrop-filter:blur(24px);box-shadow:0 30px 80px rgba(15,39,68,.14);transform:translateY({{ sheetY }});transition:{{ sheetTrans }};display:flex;flex-direction:column;overflow:hidden">
     <div onPointerDown="{{ handleDown }}" onPointerMove="{{ handleMove }}" onPointerUp="{{ handleUp }}" onPointerCancel="{{ handleUp }}" onClick="{{ handleClick }}" role="button" aria-label="Bajar tablero" title="Arrastra hacia abajo o toca para cerrar" style="flex:none;height:26px;display:flex;align-items:center;justify-content:center;cursor:grab;touch-action:none">
       <span style="width:46px;height:5px;border-radius:3px;background:var(--ink-soft);opacity:.45"></span>
     </div>
@@ -684,7 +718,8 @@ class Component extends DCLogic {
   state = { crew: 'katya', dialPos: 0, dialDir: 1, legend: false, sleepMetric: 'dur', cogSel: 'pvt', view: 'home', idx: 108, ended: false, histMode: 'today', histVar: 'pulso',
     speaking: false, muted: false, caption: '', messages: [], draft: '', showHelp: false, drag: 0, dragging: false, retrying: false,
     cog: { step: 'menu' }, pvt: null, rtNow: 0, confirmExit: false, sessions: {}, chatTick: 0,
-    live: false, backendUp: false, llmUp: true, liveNotifs: [] };
+    live: false, backendUp: false, llmUp: true, liveNotifs: [],
+    vw: (typeof window !== 'undefined' ? window.innerWidth : 1040) };
   chatScrollRef = React.createRef();
   componentDidMount() {
     const cr = CREW[0];
@@ -707,9 +742,12 @@ class Component extends DCLogic {
       if (e.key === 'ArrowLeft') this.shiftDial(-1);
     };
     window.addEventListener('keydown', this.keys);
+    this.onResize = () => { if (this._rz) return; this._rz = requestAnimationFrame(() => { this._rz = null; const w = window.innerWidth; if (w !== this.state.vw) this.setState({ vw: w }); }); };
+    window.addEventListener('resize', this.onResize, { passive: true });
+    window.addEventListener('orientationchange', this.onResize);
     this.applyTheme();
   }
-  componentWillUnmount() { clearInterval(this.timer); window.removeEventListener('keydown', this.keys); this.clearPvt(); clearInterval(this.streamT); this.streamAbort && this.streamAbort.abort(); window.speechSynthesis && speechSynthesis.cancel(); }
+  componentWillUnmount() { clearInterval(this.timer); window.removeEventListener('keydown', this.keys); this.onResize && (window.removeEventListener('resize', this.onResize), window.removeEventListener('orientationchange', this.onResize)); this.clearPvt(); clearInterval(this.streamT); this.streamAbort && this.streamAbort.abort(); window.speechSynthesis && speechSynthesis.cancel(); }
 
   async initLive() {
     if (window.ORBITAL_FORCE_DEMO || !window.OrbitalLive || !window.OrbitalAPI) return;   // modo demostración
@@ -878,7 +916,7 @@ class Component extends DCLogic {
 
     const crewList = CREW.map(c => {
       const sel = c.id === S.crew, a = connecting ? { sev: -1 } : this.analyze(c, S.idx);
-      return { name: c.name, selected: sel, bg: sel ? 'var(--orbi)' : 'var(--surface)', fg: sel ? '#fff' : 'var(--ink-soft)', shadow: sel ? '0 10px 26px var(--orbi-glow)' : 'var(--shadow)', weight: sel ? 700 : 500, label: sel ? 'var(--ink)' : 'var(--ink-soft)', dot: a.sev <= 0 ? (a.sev === -1 ? 'var(--state-idle)' : 'var(--state-ok)') : SEV_VAR[a.sev],
+      return { name: c.name, first: c.name.split(' ')[0], selected: sel, bg: sel ? 'var(--orbi)' : 'var(--surface)', fg: sel ? '#fff' : 'var(--ink-soft)', shadow: sel ? '0 10px 26px var(--orbi-glow)' : 'var(--shadow)', weight: sel ? 700 : 500, label: sel ? 'var(--ink)' : 'var(--ink-soft)', dot: a.sev <= 0 ? (a.sev === -1 ? 'var(--state-idle)' : 'var(--state-ok)') : SEV_VAR[a.sev],
         onClick: () => { if (this.state.cog.step === 'test') return; const nc = CREW.find(x => x.id === c.id); const ni = this.live && nc && nc.series && nc.series.pulso ? nc.series.pulso.length - 1 : this.state.idx; this.setState({ crew: c.id, dialPos: 0, cog: { step: 'menu' }, idx: Math.max(0, ni) }); this.openStream(c.id); } };
     });
     const dir = S.dialDir >= 0 ? 1 : -1; this.po = this.po || {};
@@ -896,6 +934,10 @@ class Component extends DCLogic {
         onClick: e => { e.stopPropagation(); if (this.moved) return; act ? openDash() : this.goDial(i); } };
     });
     const segItems = order.map((k, i) => { const ss = statusSev[k], on = i === dIdx; return { label: VIEWS[k].label, short: VIEWS[k].short, icon: IC[k], active: on, bg: on ? 'var(--surface)' : 'transparent', fg: on ? 'var(--orbi)' : 'var(--ink-soft)', shadow: on ? 'var(--shadow)' : 'none', dotC: ss > 0 ? SEV_VAR[ss] : 'transparent', dotAnim: ss > 0 && !reduced ? 'orbBlink 1.2s ease-in-out infinite' : 'none', onClick: () => { if (this.state.cog.step === 'test') return; this.goDial(i); } }; });
+    const mobile = S.vw < 760, desktop = !mobile;
+    const navItems = order.map((k, i) => { const ss = statusSev[k], al = ss > 0, on = i === dIdx && inDash; return { label: VIEWS[k].label, short: VIEWS[k].short, icon: IC[k], active: on,
+      bg: on ? 'var(--orbi)' : al ? tint(ss) : 'transparent', fg: on ? '#fff' : al ? SEV_VAR[ss] : 'var(--ink-soft)', dotC: al ? SEV_VAR[ss] : 'transparent',
+      onClick: () => { if (this.state.cog.step === 'test') return; this.goDial(i); openDash(); } }; });
     const legend = [
       { sg: sig(0), name: 'ÓPTIMO', role: 'Información', text: 'Dentro de tu rango personal. No necesitas hacer nada.' },
       { sg: sig(1), name: 'VIGILAR', role: 'Precaución', text: 'Algo se mueve despacio. Revisa cuando puedas.' },
@@ -991,7 +1033,12 @@ class Component extends DCLogic {
       showRetry: offline, retryLabel: S.retrying ? '…' : 'Reintentar', retry: () => { this.setState({ retrying: true }); setTimeout(() => this.setState({ retrying: false }), 1600); },
       openHelp: () => this.setState({ showHelp: true }), showHelp: S.showHelp, closeHelp: () => { localStorage.setItem('orbital.onboarded', '1'); this.setState({ showHelp: false }); },
       orbiEl: React.createElement(OrbiSphere, { color: orbiColor, speaking: S.speaking, reduced, glow: offline ? 0 : A.sev >= 2 ? 1 : A.sev === 1 ? .25 : 0 }),
-      orbiTransform: inChat ? 'translate(-50%, calc(-50% - 150px)) scale(.26)' : inDash ? 'translate(-50%,-50%) scale(.92)' : 'translate(-50%,-50%)',
+      mobile, desktop,
+      navItems, navOpacity: (inChat || inDash) ? 0 : 1, navPE: (inChat || inDash) ? 'none' : 'auto',
+      crewmOpacity: inChat ? 0 : 1, crewmPE: inChat ? 'none' : 'auto',
+      orbiTransform: mobile
+        ? (inChat ? 'translate(-50%, calc(-50% - 118px)) scale(.2)' : inDash ? 'translate(-50%,-50%) scale(.42)' : 'translate(-50%,-50%) scale(.56)')
+        : (inChat ? 'translate(-50%, calc(-50% - 150px)) scale(.26)' : inDash ? 'translate(-50%,-50%) scale(.92)' : 'translate(-50%,-50%)'),
       orbiFilter: inDash ? 'blur(14px)' : 'none', orbiOpacity: inDash ? .7 : 1,
       onOrbiClick: () => { if (S.view === 'home') openDash(); },
       homeOpacity: S.view === 'home' ? 1 : 0, homePE: S.view === 'home' ? 'auto' : 'none',
@@ -1053,8 +1100,15 @@ class Component extends DCLogic {
   // Escala el "stage" (1040x640) para caber en cualquier pantalla: móvil, tablet, smartwatch.
   (function(){
     function fit(){ var st=document.getElementById('stage'); if(!st) return;
-      var k=Math.min(window.innerWidth/1040, window.innerHeight/640);
-      st.style.transform='translate(-50%,-50%) scale('+k+')'; }
+      var w=window.innerWidth, h=window.innerHeight;
+      if(w < 760){                                  // móvil: el stage se vuelve fluido y se reacomoda (no se escala)
+        st.style.width=w+'px'; st.style.height=h+'px';
+        st.style.transform='translate(-50%,-50%)';
+      } else {                                       // escritorio / tablet / reloj: escala 1040x640 para caber
+        st.style.width='1040px'; st.style.height='640px';
+        var k=Math.min(w/1040, h/640);
+        st.style.transform='translate(-50%,-50%) scale('+k+')';
+      } }
     window.addEventListener('resize', fit, {passive:true});
     window.addEventListener('orientationchange', fit);
     setInterval(fit, 400);   // re-aplica tras renders de React
