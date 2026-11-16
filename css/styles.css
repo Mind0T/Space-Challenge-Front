@@ -9,3 +9,5 @@ input::placeholder{color:var(--ink-soft)}
 @keyframes orbPulse3{0%,100%{box-shadow:0 0 0 3px rgba(217,43,63,.3),0 0 18px rgba(217,43,63,.6)}50%{box-shadow:0 0 0 12px rgba(217,43,63,0),0 0 40px rgba(217,43,63,.9)}}
 @keyframes orbBeat{0%,100%{transform:scale(1)}14%{transform:scale(1.28)}28%{transform:scale(1)}42%{transform:scale(1.2)}56%{transform:scale(1)}}
 @keyframes orbBlink{0%,100%{opacity:1}50%{opacity:.25}}
+
+html,body{overflow:hidden}

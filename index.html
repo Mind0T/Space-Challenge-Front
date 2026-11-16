@@ -13,9 +13,15 @@
 <script src="js/support.js"></script>
 <script>
   // Dónde vive el backend de Space-Challenge. Cámbialo con ?api=<url> o editando esta línea.
-  window.ORBITAL_API_BASE = (new URLSearchParams(location.search).get('api')) || 'http://localhost:8000';
-  // ?demo=1 fuerza el modo demostración (datos sintéticos), sin intentar el backend.
-  window.ORBITAL_FORCE_DEMO = new URLSearchParams(location.search).get('demo') === '1';
+  (function(){
+    var q = new URLSearchParams(location.search);
+    window.ORBITAL_API_BASE = q.get('api') || 'http://localhost:8000';
+    // En despliegue (no localhost) y sin ?api, usa datos simulados: no intenta backend ni genera errores.
+    var local = ['localhost','127.0.0.1'].indexOf(location.hostname) >= 0;
+    window.ORBITAL_FORCE_DEMO = q.get('demo') === '1' || (!q.get('api') && !local);
+    window.__ORBITAL_DEMO_DEFAULT = !q.get('api') && !local;
+  })();
+  // ?demo=1 fuerza demostración · ?api=<url> usa un backend · en Vercel va en demo por defecto.
 </script>
 <script src="js/api.js"></script>
 <script src="js/live.js"></script>
@@ -23,7 +29,7 @@
 <body>
 <x-dc>
 
-<div style="position:relative;width:100vw;height:100vh;min-height:520px;min-width:900px;overflow:hidden;background:var(--bg);color:var(--ink);transition:background .5s var(--ease)">
+<div id="stage" style="position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);transform-origin:center center;width:1040px;height:640px;overflow:hidden;background:var(--bg);color:var(--ink);transition:background .5s var(--ease)">
 
   <div style="position:absolute;top:22px;left:0;right:0;display:flex;justify-content:center;pointer-events:none;z-index:5">
     <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;letter-spacing:.42em;color:var(--ink-soft);padding-left:.42em">ORBITAL</div>
@@ -40,11 +46,11 @@
     <button onClick="{{ openHelp }}" aria-label="Ayuda" title="Cómo usar ORBITAL" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--hairline);background:var(--surface-translucent);backdrop-filter:blur(20px);font-family:'Space Grotesk';font-size:14px;color:var(--ink-soft);cursor:pointer">?</button>
   </div>
 
-  <div onClick="{{ onOrbiClick }}" role="button" aria-label="Abrir tablero de monitoreo" style="position:absolute;left:50%;top:calc(50% - 110px);width:min(calc(100vh - 440px),420px);height:min(calc(100vh - 440px),420px);min-width:150px;min-height:150px;transform:{{ orbiTransform }};filter:{{ orbiFilter }};opacity:{{ orbiOpacity }};transition:transform .5s var(--ease),filter .5s var(--ease),opacity .5s var(--ease);cursor:pointer;z-index:2">
+  <div onClick="{{ onOrbiClick }}" role="button" aria-label="Abrir tablero de monitoreo" style="position:absolute;left:50%;top:calc(50% - 110px);width:360px;height:360px;transform:{{ orbiTransform }};filter:{{ orbiFilter }};opacity:{{ orbiOpacity }};transition:transform .5s var(--ease),filter .5s var(--ease),opacity .5s var(--ease);cursor:pointer;z-index:2">
     {{ orbiEl }}
   </div>
 
-  <div style="position:absolute;left:50%;bottom:216px;transform:translateX(-50%);width:min(560px,70vw);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;opacity:{{ homeOpacity }};pointer-events:{{ homePE }};transition:opacity .4s var(--ease);z-index:3">
+  <div style="position:absolute;left:50%;bottom:216px;transform:translateX(-50%);width:560px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;opacity:{{ homeOpacity }};pointer-events:{{ homePE }};transition:opacity .4s var(--ease);z-index:3">
     <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;line-height:1.3">{{ greeting }}</div>
     <div style="display:flex;align-items:center;gap:8px">
       <button onClick="{{ onStatusClick }}" style="display:flex;align-items:center;gap:9px;border:0;padding:8px 14px;border-radius:999px;background:var(--surface-translucent);backdrop-filter:blur(20px);font-size:14px;color:var(--ink);cursor:pointer">
@@ -98,7 +104,7 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>Cerrar chat
       </button>
     </div>
-    <div ref="{{ chatScrollRef }}" style="position:absolute;top:calc(13vh + 70px);bottom:190px;left:50%;transform:translateX(-50%);width:min(760px,calc(100% - 260px));overflow-y:auto;display:flex;flex-direction:column;gap:18px;padding:8px 4px 12px;scrollbar-width:thin">
+    <div ref="{{ chatScrollRef }}" style="position:absolute;top:150px;bottom:190px;left:50%;transform:translateX(-50%);width:min(760px,calc(100% - 260px));overflow-y:auto;display:flex;flex-direction:column;gap:18px;padding:8px 4px 12px;scrollbar-width:thin">
       <div style="flex:1"></div>
       <sc-if value="{{ llmOff }}" hint-placeholder-val="{{ false }}">
         <div style="align-self:center;max-width:520px;text-align:center;display:flex;flex-direction:column;gap:6px;padding:14px 20px;border-radius:20px;background:var(--surface-translucent);backdrop-filter:blur(20px)">
@@ -214,7 +220,7 @@
       </sc-if>
 
       <sc-if value="{{ noData }}" hint-placeholder-val="{{ false }}">
-        <div style="max-width:520px;margin:6vh auto 0;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+        <div style="max-width:520px;margin:34px auto 0;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
           <div style="width:64px;height:64px;border-radius:50%;border:1.5px dashed var(--state-idle);display:flex;align-items:center;justify-content:center;color:var(--state-idle)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4.5 20.5c.8-3.6 3.9-6 7.5-6s6.7 2.4 7.5 6"></path></svg></div>
           <div style="font-family:'Space Grotesk';font-size:24px;font-weight:600;letter-spacing:-.02em">Aún no hay lecturas de {{ crewName }}</div>
           <div style="font-size:15px;line-height:1.6;color:var(--ink-soft);text-wrap:pretty">Orbi todavía no conoce su línea base: necesita cerca de 24 h de lecturas para saber qué es normal para él. Mientras tanto, nada aquí indica un problema.</div>
@@ -346,7 +352,7 @@
 
       <sc-if value="{{ isSleep }}" hint-placeholder-val="{{ false }}">
         <sc-if value="{{ sleep.none }}" hint-placeholder-val="{{ false }}">
-          <div style="max-width:520px;margin:6vh auto 0;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+          <div style="max-width:520px;margin:34px auto 0;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
             <div style="width:64px;height:64px;border-radius:50%;border:1.5px dashed var(--state-idle);display:flex;align-items:center;justify-content:center;color:var(--state-idle)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="{{ moonIcon }}"></path></svg></div>
             <div style="font-family:'Space Grotesk';font-size:24px;font-weight:600;letter-spacing:-.02em">Sin registro de sueño de {{ crewName }}</div>
             <div style="font-size:15px;line-height:1.6;color:var(--ink-soft);text-wrap:pretty">El sistema no entrega datos de sueño de este tripulante. Orbi no puede opinar sobre su descanso, y esto no indica un problema.</div>
@@ -427,7 +433,7 @@
           </sc-if>
 
           <sc-if value="{{ cogIntroStep }}" hint-placeholder-val="{{ false }}">
-            <div style="max-width:620px;width:100%;margin:2vh auto 0;background:var(--surface);border-radius:28px;padding:32px;display:flex;flex-direction:column;gap:22px;box-shadow:var(--shadow)">
+            <div style="max-width:620px;width:100%;margin:12px auto 0;background:var(--surface);border-radius:28px;padding:32px;display:flex;flex-direction:column;gap:22px;box-shadow:var(--shadow)">
               <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:11px;letter-spacing:.16em;color:var(--orbi);font-weight:600">ANTES DE EMPEZAR</span><span style="font-family:'Space Grotesk';font-size:28px;font-weight:700;letter-spacing:-.02em">Tiempo de reacción</span></div>
               <div style="display:flex;gap:16px"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk';font-weight:700;color:var(--orbi)">1</span><div style="display:flex;flex-direction:column;gap:3px"><span style="font-weight:600">Qué harás</span><span style="font-size:14px;color:var(--ink-soft);line-height:1.5">Mira el anillo. Cuando se llene de azul, toca la pantalla (o la barra espaciadora) lo más rápido que puedas.</span></div></div>
               <div style="display:flex;gap:16px"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk';font-weight:700;color:var(--orbi)">2</span><div style="display:flex;flex-direction:column;gap:3px"><span style="font-weight:600">Cuánto dura</span><span style="font-size:14px;color:var(--ink-soft);line-height:1.5">Cerca de un minuto: 8 círculos que aparecen a tiempos distintos.</span></div></div>
@@ -462,7 +468,7 @@
           </sc-if>
 
           <sc-if value="{{ cogResult }}" hint-placeholder-val="{{ false }}">
-            <div style="max-width:620px;width:100%;margin:2vh auto 0;background:var(--surface);border-radius:28px;padding:32px;display:flex;flex-direction:column;gap:18px;box-shadow:var(--shadow)">
+            <div style="max-width:620px;width:100%;margin:12px auto 0;background:var(--surface);border-radius:28px;padding:32px;display:flex;flex-direction:column;gap:18px;box-shadow:var(--shadow)">
               <span style="font-size:11px;letter-spacing:.16em;color:var(--ink-soft)">RESULTADO · COMPARADO CON TU LÍNEA BASE</span>
               <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><span style="font-family:'Space Grotesk';font-size:72px;font-weight:700;letter-spacing:-.04em;line-height:1">{{ res.median }}</span><span style="font-size:15px;font-weight:600;color:var(--ink-soft)">ms</span><span style="flex:1"></span><span style="display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:{{ res.stBg }};font-size:12px;font-weight:700;letter-spacing:.1em"><svg width="15" height="15" viewBox="0 0 16 16" style="flex:none"><path d="{{ res.sg.shape }}" fill="{{ res.sg.fill }}" stroke="{{ res.sg.stroke }}" stroke-width="1.3" stroke-linejoin="round"></path><path d="{{ res.sg.mark }}" fill="none" stroke="{{ res.sg.markC }}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>{{ res.stLabel }}</span></div>
               <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
@@ -481,7 +487,7 @@
 
   <sc-if value="{{ showHelp }}" hint-placeholder-val="{{ false }}">
     <div style="position:absolute;inset:0;z-index:30;background:rgba(15,39,68,.18);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center">
-      <div style="width:min(480px,90vw);background:var(--surface);border-radius:28px;padding:30px;display:flex;flex-direction:column;gap:18px;box-shadow:0 30px 80px rgba(15,39,68,.2)">
+      <div style="width:460px;background:var(--surface);border-radius:28px;padding:30px;display:flex;flex-direction:column;gap:18px;box-shadow:0 30px 80px rgba(15,39,68,.2)">
         <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:11px;letter-spacing:.16em;color:var(--orbi);font-weight:600">HOLA, SOY ORBI</span><span style="font-family:'Space Grotesk';font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.25;text-wrap:pretty">Te acompaño en silencio y solo hablo cuando algo cambia.</span></div>
         <div style="display:flex;gap:14px;align-items:flex-start"><span style="flex:none;width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #8fb0ff, var(--orbi) 60%, var(--orbi-deep))"></span><span style="font-size:14px;line-height:1.5"><b>Toca la esfera</b> para ver tus datos. Si cambio de color, algo merece tu atención.</span></div>
         <div style="display:flex;gap:14px;align-items:flex-start"><span style="flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;color:var(--ink-soft)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 16a12 12 0 0 1 18 0M7 12l-3 4 4 1M17 12l3 4-4 1"></path></svg></span><span style="font-size:14px;line-height:1.5"><b>Desliza el arco</b> de abajo para elegir: signos vitales, temperatura, sueño o cognición.</span></div>
@@ -627,9 +633,9 @@ function OrbiSphere(p) {
       const tg = hx(P.color); col = col.map((v, i) => v + (tg[i] - v) * .015);
       amp += ((P.speaking ? 1 : 0) - amp) * .05;
       const t = (now - t0) / 1000, red = P.reduced;
-      const R = Math.min(w, h) * .36 * (1 + (red ? .008 : .03) * Math.sin(t * 1.05));
+      const R = Math.min(w, h) * .32 * (1 + (red ? .008 : .03) * Math.sin(t * 1.05));
       const cx = w / 2, cy = h / 2, [cr, cg, cb] = col.map(Math.round);
-      const g = ctx.createRadialGradient(cx, cy, R * .2, cx, cy, R * 1.55);
+      const g = ctx.createRadialGradient(cx, cy, R * .2, cx, cy, R * 1.4);
       const gl = P.glow || 0; g.addColorStop(0, `rgba(${cr},${cg},${cb},${.22 + amp * .12 + gl * .3})`); g.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
       ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
       const ry = t * (red ? .03 : .14) + amp * t * .2, cosY = Math.cos(ry), sinY = Math.sin(ry), tx = .38, cosX = Math.cos(tx), sinX = Math.sin(tx);
@@ -985,7 +991,7 @@ class Component extends DCLogic {
       showRetry: offline, retryLabel: S.retrying ? '…' : 'Reintentar', retry: () => { this.setState({ retrying: true }); setTimeout(() => this.setState({ retrying: false }), 1600); },
       openHelp: () => this.setState({ showHelp: true }), showHelp: S.showHelp, closeHelp: () => { localStorage.setItem('orbital.onboarded', '1'); this.setState({ showHelp: false }); },
       orbiEl: React.createElement(OrbiSphere, { color: orbiColor, speaking: S.speaking, reduced, glow: offline ? 0 : A.sev >= 2 ? 1 : A.sev === 1 ? .25 : 0 }),
-      orbiTransform: inChat ? 'translate(-50%, calc(-50% - 50vh + 170px)) scale(.26)' : inDash ? 'translate(-50%,-50%) scale(.92)' : 'translate(-50%,-50%)',
+      orbiTransform: inChat ? 'translate(-50%, calc(-50% - 150px)) scale(.26)' : inDash ? 'translate(-50%,-50%) scale(.92)' : 'translate(-50%,-50%)',
       orbiFilter: inDash ? 'blur(14px)' : 'none', orbiOpacity: inDash ? .7 : 1,
       onOrbiClick: () => { if (S.view === 'home') openDash(); },
       homeOpacity: S.view === 'home' ? 1 : 0, homePE: S.view === 'home' ? 'auto' : 'none',
@@ -1042,6 +1048,18 @@ class Component extends DCLogic {
     };
   }
 }
+</script>
+<script>
+  // Escala el "stage" (1040x640) para caber en cualquier pantalla: móvil, tablet, smartwatch.
+  (function(){
+    function fit(){ var st=document.getElementById('stage'); if(!st) return;
+      var k=Math.min(window.innerWidth/1040, window.innerHeight/640);
+      st.style.transform='translate(-50%,-50%) scale('+k+')'; }
+    window.addEventListener('resize', fit, {passive:true});
+    window.addEventListener('orientationchange', fit);
+    setInterval(fit, 400);   // re-aplica tras renders de React
+    fit();
+  })();
 </script>
 </body>
 </html>
