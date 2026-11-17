@@ -14,6 +14,8 @@ html,body{overflow:hidden}
 
 /* ===== Móvil nativo (reflow vertical para teléfonos) ===== */
 @media (max-width:760px){
+  /* Menú de media luna (dial) también en teléfono: se escala para caber */
+  .l-dial{ transform:scale(.62) !important; transform-origin:50% 100%; }
   /* Wordmark a la izquierda para no chocar con la píldora de estado */
   .l-top{ justify-content:flex-start !important; padding-left:16px; top:18px !important; }
   /* La esfera de Orbi sube y se reduce; el saludo baja justo debajo */

@@ -95,8 +95,7 @@
   </div>
   </sc-if>
 
-  <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
-  <div onPointerDown="{{ dialDown }}" onPointerMove="{{ dialMove }}" onPointerUp="{{ dialUp }}" onPointerCancel="{{ dialUp }}" onWheel="{{ dialWheel }}" style="position:absolute;left:50%;bottom:0;width:520px;height:200px;margin-left:-260px;touch-action:none;user-select:none;opacity:{{ dialOpacity }};pointer-events:{{ dialPE }};transform:translateY({{ dialY }});transition:opacity .4s var(--ease),transform .5s var(--ease);z-index:4">
+  <div class="l-dial" onPointerDown="{{ dialDown }}" onPointerMove="{{ dialMove }}" onPointerUp="{{ dialUp }}" onPointerCancel="{{ dialUp }}" onWheel="{{ dialWheel }}" style="position:absolute;left:50%;bottom:0;width:520px;height:200px;margin-left:-260px;touch-action:none;user-select:none;opacity:{{ dialOpacity }};pointer-events:{{ dialPE }};transform:translateY({{ dialY }});transition:opacity .4s var(--ease),transform .5s var(--ease);z-index:4">
     <svg width="520" height="200" viewBox="0 0 520 200" style="position:absolute;inset:0;pointer-events:none">
       <defs><linearGradient id="arcfade" x1="0" x2="1"><stop offset="0" stop-color="var(--ink)" stop-opacity="0"></stop><stop offset=".5" stop-color="var(--ink)" stop-opacity=".22"></stop><stop offset="1" stop-color="var(--ink)" stop-opacity="0"></stop></linearGradient></defs>
       <path d="M4 194 A290 290 0 0 1 516 194" fill="none" stroke="url(#arcfade)" stroke-width="1.2"></path>
@@ -114,23 +113,6 @@
     </button>
     <div style="position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:11px;color:var(--ink-soft);opacity:{{ dialHintO }};transition:opacity .4s">Desliza el arco ← → para cambiar de tema</div>
   </div>
-  </sc-if>
-
-  <sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}">
-  <div class="l-navm" style="position:absolute;left:0;right:0;bottom:0;z-index:8;display:flex;align-items:center;gap:7px;padding:9px 12px calc(9px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--bg) 62%,transparent);opacity:{{ navOpacity }};pointer-events:{{ navPE }};transition:opacity .4s var(--ease)">
-    <sc-for list="{{ navItems }}" as="ni" hint-placeholder-count="4">
-      <button onClick="{{ ni.onClick }}" aria-label="{{ ni.label }}" aria-pressed="{{ ni.active }}" style="position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border:0;border-radius:15px;background:{{ ni.bg }};color:{{ ni.fg }};cursor:pointer;transition:background .3s var(--ease),color .3s var(--ease)">
-        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ ni.icon }}"></path></svg>
-        <span style="font-size:10px;font-weight:700;letter-spacing:.01em">{{ ni.short }}</span>
-        <span style="position:absolute;top:5px;left:calc(50% + 11px);width:7px;height:7px;border-radius:50%;background:{{ ni.dotC }}"></span>
-      </button>
-    </sc-for>
-    <button onClick="{{ openChat }}" aria-label="Hablar con Orbi" style="flex:none;width:54px;height:54px;border-radius:50%;border:0;background:var(--orbi);color:#fff;display:flex;align-items:center;justify-content:center;gap:3px;box-shadow:0 10px 26px var(--orbi-glow);cursor:pointer">
-      <span style="width:5px;height:5px;border-radius:50%;background:#fff"></span><span style="width:5px;height:5px;border-radius:50%;background:#fff"></span><span style="width:5px;height:5px;border-radius:50%;background:#fff"></span>
-      <sc-if value="{{ llmOff }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:3px;right:3px;width:11px;height:11px;border-radius:50%;background:var(--state-idle);border:2px solid var(--bg)"></span></sc-if>
-    </button>
-  </div>
-  </sc-if>
 
   <div style="position:absolute;inset:0;z-index:10;opacity:{{ chatOpacity }};pointer-events:{{ chatPE }};transform:translateY({{ chatY }});transition:opacity .45s var(--ease),transform .5s var(--ease)">
     <div class="l-chatw" style="position:absolute;top:64px;left:50%;transform:translateX(-50%);width:min(760px,calc(100% - 260px));display:flex;justify-content:flex-end">
