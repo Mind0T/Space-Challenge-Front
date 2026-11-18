@@ -1,6 +1,6 @@
 # ORBITAL · Front
 
-Interfaz de ORBITAL (NASA Space Apps CDMX 2026, equipo Tacos de Asada): monitoreo de salud física y mental de astronautas. **Software local, sin internet.** Diseño generado en Claude Design y conectado al backend real ([`Taquit/Space-Challenge`](https://github.com/Taquit/Space-Challenge)).
+Interfaz de ORBITAL (NASA Space Apps CDMX 2026, equipo Tacos de Asada): monitoreo de salud física y mental de astronautas. **Software local, sin internet.** Diseño de UI/UX y frontend, conectado al backend real ([`Taquit/Space-Challenge`](https://github.com/Taquit/Space-Challenge)).
 
 ## Cómo correrlo
 
@@ -69,3 +69,10 @@ js/vendor/          react / react-dom (producción)
 - **Carlos N.:** no existe en el backend (identidad de diseño "sin sensor").
 
 Para servir el front desde el propio backend (un solo proceso, sin CORS), ver `INTEGRACION_BACKEND.md`.
+
+## 👨‍💻 Autor
+
+**Irving Soriano** — Estudiante de la Licenciatura en Ciencia de Datos en la Escuela Superior de Cómputo (ESCOM) del IPN.
+
+* **GitHub**: [Mind0T](https://github.com/Mind0T)
+* **LinkedIn**: [Irving Soriano](https://www.linkedin.com/in/irving-soriano)
